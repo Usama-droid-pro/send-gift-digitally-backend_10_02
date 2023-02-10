@@ -238,3 +238,69 @@ exports.getGiftBoxesByUserId = async (req,res)=>{
         })
     }
 }
+
+
+exports.getGiftBoxesByCategory_id = async (req,res)=>{
+    try{
+        const category_id= req.query.category_id;
+
+
+       const result= await giftBoxModel.find({category_id:category_id}).populate("user_id").populate("type").populate('category_id');
+
+       if(result){
+        res.json({
+            message: "gift boxes fetched by category id",
+            result: result,
+            status:true,
+        })
+       }
+       else{
+        res.json({
+            message: "Could not be able to fetch",
+            status:false,
+            
+        })
+       }
+    }
+    catch(err){
+        res.json({
+            message: "Error occurred while fetching",
+            status:false,
+            error:err.message,
+
+        })
+    }
+}
+
+
+exports.getGiftBoxesByType= async(req,res)=>{
+    try{
+        const type= req.query.type;
+
+
+       const result= await giftBoxModel.find({type:type}).populate("user_id").populate("type").populate('category_id');
+
+       if(result){
+        res.json({
+            message: "gift boxes fetchd by type",
+            result: result,
+            status:true,
+        })
+       }
+       else{
+        res.json({
+            message: "Could not be able to fetch",
+            status:false,
+            
+        })
+       }
+    }
+    catch(err){
+        res.json({
+            message: "Error occurred while fetching",
+            status:false,
+            error:err.message,
+
+        })
+    }
+}

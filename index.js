@@ -11,6 +11,9 @@ const PORT = 3000;
 const cors = require('cors');
 
 app.use("/giftBoxImages" , express.static("giftBoxImages"))
+app.use("/userImages" , express.static("userImages"))
+app.use("/adminImages" , express.static("adminImages"))
+
 
 
 app.use(bodyParser.urlencoded({ extended: true }))
