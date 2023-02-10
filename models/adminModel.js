@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const adminSchema = new mongoose.Schema({
 _id:mongoose.Schema.Types.ObjectId,
+  user_name:String,
   email: {
     type: String,
     required: true,
@@ -15,6 +16,7 @@ _id:mongoose.Schema.Types.ObjectId,
     max: 2048,
     min: 6,
   },
+  image:String
 } 
 );
 module.exports = mongoose.model("admin", adminSchema);
