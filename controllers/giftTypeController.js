@@ -1,13 +1,22 @@
 
 const mongoose = require('mongoose');
 const giftTypeModel = require("../models/giftTypeModel");
-
+const fs = require('fs')
 exports.createGiftType = async (req,res)=>{
     try{
+        let image;
+        if (req.file) {
+            image = req.file.path
+        }
+
+        console.log(req.file)
+
         const newGiftType = new giftTypeModel({
             _id:mongoose.Types.ObjectId(),
             name:req.body.name,
-            category_id:req.body.category_id
+            category_id:req.body.category_id,
+            image: image,
+            for:req.body.for
         })
         const result = await newGiftType.save();
 
@@ -97,6 +106,22 @@ exports.getGiftTypeById = async(req,res)=>{
 exports.deleteGiftType = async (req,res)=>{
     try{
         const giftType_id = req.query.giftType_id;
+
+        
+        const foundResult = await giftTypeModel.findOne({ _id: giftType_id });
+
+        if (foundResult) {
+            if (foundResult.image) {
+                fs.unlink(foundResult.image, (err) => {
+                    if (!err) {
+                        console.log('deleted previous image')
+                    }
+                    else {
+                        console.log('Error occurred while deleting previous image')
+                    }
+                })
+            }
+        }
         const result = await giftTypeModel.deleteOne({_id: giftType_id});
 
         if(result.deletedCount>0){
@@ -128,9 +153,33 @@ exports.updateGiftType = async (req,res)=>{
     try{
         const giftType_id = req.body.giftType_id;
         const name = req.body.name;
-        category_id= req.body.category_id;
+        const category_id= req.body.category_id;
+        
 
-        const result = await giftTypeModel.findOneAndUpdate({_id: giftType_id} , {name:name , category_id:category_id} , {new:true});
+        let image;
+
+        if (req.file) {
+            image = req.file.path;
+            const foundResult = await giftTypeModel.findOne({ _id: giftType_id });
+
+
+            if (foundResult) {
+                if (foundResult.image) {
+                    fs.unlink(foundResult.image, (err) => {
+                        if (!err) {
+                            console.log('deleted previous image')
+                        }
+                        else {
+                            console.log('Error occurred while deleting previous image')
+                        }
+                    })
+                }
+            }
+
+        }
+        
+        
+        const result = await giftTypeModel.findOneAndUpdate({_id: giftType_id} , {name:name , category_id:category_id , for:req.body.for , image:image} , {new:true});
 
         if(result){
             res.json({

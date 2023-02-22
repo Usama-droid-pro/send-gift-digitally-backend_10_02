@@ -111,7 +111,7 @@ exports.login = async (req,res)=>{
 
 
 exports.checkLogin=(req,res)=>{
-    
+
 }
 
 
@@ -218,7 +218,7 @@ exports.updateUser = async (req,res)=>{
 
         
 
-        userModel.findOneAndUpdate({user_id:user_id},
+        userModel.findOneAndUpdate({_id:user_id},
             {
                 email:email,
                 blockStatus:blockStatus,
