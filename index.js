@@ -54,48 +54,43 @@ app.use("/sendAndReceiveGift" , require("./routes/receivedGiftRoute"))
 app.use("/giftType" , require("./routes/giftTypeRoute"))
 app.use("/comments" , require("./routes/commentsRoute"))
 app.use("/subscriptionHistory" , require("./routes/subscriptionHistoryRoute"))
+// app.use("/aboutUs" , require("./routes/aboutUsRoute"))
+app.use("/imageSuggestions" , require("./routes/imageSuggestionRoute"))
 
 
 
 
 
 
-
-
-
-
-
-
-
-app.post("/user/logout",(req,res)=>
-{
-  const userId= req.body.userId;
+// app.post("/user/logout",(req,res)=>
+// {
+//   const userId= req.body.userId;
   
-  const userLog= new userLogsModel({
-    _id:mongoose.Types.ObjectId(),
-    user_id:userId,
-    ip:req.body.ip,
-    country:req.body.country,
-    logType:"logout"
-  })
+//   const userLog= new userLogsModel({
+//     _id:mongoose.Types.ObjectId(),
+//     user_id:userId,
+//     ip:req.body.ip,
+//     country:req.body.country,
+//     logType:"logout"
+//   })
 
-  userLog.save(function(err,result){
-    if(result){
-      res.json({
-        message: "user Logout record maintained",
-        result:result,
-        message: "after calling this api delete user jwt token stored in cookies ,local storage from front end"
-      })
-    }
-    else{
-      console.log("Error in saving logs")
-    }
-  })
+//   userLog.save(function(err,result){
+//     if(result){
+//       res.json({
+//         message: "user Logout record maintained",
+//         result:result,
+//         message: "after calling this api delete user jwt token stored in cookies ,local storage from front end"
+//       })
+//     }
+//     else{
+//       console.log("Error in saving logs")
+//     }
+//   })
 
  
-})
+// })
 
-// const cloudinary = require("./utils/cloudinary")
+// // const cloudinary = require("./utils/cloudinary")
 
 
 

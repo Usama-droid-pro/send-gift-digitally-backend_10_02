@@ -7,6 +7,11 @@ const giftType = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'category'
     },
+    image: String,
+    for: {
+        type:String,
+        enum:['subscribed' , 'login' , 'guest']
+    }
 })
 
 module.exports= mongoose.model("giftType", giftType);
