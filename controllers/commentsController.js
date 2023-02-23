@@ -1,5 +1,9 @@
 const commentsModel = require("../models/commentsModel");
 const mongoose = require("mongoose");
+const receivedGiftModel = require('../models/receivedGiftModel');
+const notificationModel = require('../models/notificationModel') 
+
+const sendNotificationToUser = require('../utils/sendNotificationToUser');
 
 exports.addComment = async (req,res)=>{
     try{
@@ -7,6 +11,24 @@ exports.addComment = async (req,res)=>{
         const comment_by  = req.body.comment_by;
         const user_id = req.body.user_id;
         const comment_text = req.body.comment_text;
+
+        let to;
+        let foundResult = await receivedGiftModel.findOne({_id : gift_receive_id});
+
+        if(comment_by=="sender"){
+            if(foundResult){
+                if(foundResult.receiver_id){
+                    to=foundResult.receiver_id
+                }
+            }
+        }
+        if(comment_by=="receiver"){
+            if(foundResult){
+                if(foundResult.sender_id){
+                    to=foundResult.sender_id
+                }
+            }
+        }
 
         const savedComment = new commentsModel({
             _id:mongoose.Types.ObjectId(),
@@ -17,6 +39,22 @@ exports.addComment = async (req,res)=>{
         })
 
         const result = await savedComment.save();
+
+        if(result){
+            let store_and_send_notification =await send_store_notification_of_user(to , "User replied on gift you send" , "on_reply" );
+            if(store_and_send_notification){
+                if(store_and_send_notification.isCreateNotification==true){
+                    console.log("notification stored in db")
+                }
+                else{console.log("could not store notification")}
+            }
+
+            if(store_and_send_notification.isSend ==true){
+                console.log("Push Notification to user")
+            }else{
+                console.log("push notification could not send")
+            }
+        }
 
         if(result){
             res.json({
@@ -176,5 +214,65 @@ exports.updateComment = async (req,res)=>{
             error:err.message,
             status:false
         })
+    }
+}
+
+
+
+async function send_store_notification_of_user(user_id , message , notification_type){
+    try{
+        let object= { 
+            isSend :"" ,
+            isCreateNotification : ""
+            };
+
+        let isSend = await sendNotificationToUser(user_id , message);
+        if(isSend){
+            console.log('Notification sent to user')
+            object.isSend = true;
+        }
+        else{
+            object.isSend = false;
+        }
+
+        let isCreateNotification = await createNotificationOfUser(user_id , message , notification_type);
+        if(isCreateNotification){
+            console.log('Notification stored');
+            object.isCreateNotification=true;   
+        }
+        else{
+            object.isCreateNotification=false;
+        }
+
+        return object;
+    }
+    catch(err){
+        console.log(err);
+        return null;
+        }
+}
+
+async function createNotificationOfUser(user_id , message ,notification_type){
+    try{
+        const newNotification = new notificationModel({
+            _id : mongoose.Types.ObjectId(),
+            from:'user',
+            to:user_id,
+            message:message,
+            notification_type:notification_type
+        });
+
+        const result = await newNotification.save();
+
+        if(result){
+            return true
+        }
+        else{
+            return false
+        }
+    }
+    catch(err){
+        console.log(err);
+        return false;
     }
 }

@@ -1,1 +1,0 @@
-const commentModel = require("../models/commentsModel")

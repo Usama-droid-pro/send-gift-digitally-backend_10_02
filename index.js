@@ -13,6 +13,12 @@ const cors = require('cors');
 app.use("/giftBoxImages" , express.static("giftBoxImages"))
 app.use("/userImages" , express.static("userImages"))
 app.use("/adminImages" , express.static("adminImages"))
+app.use("/suggestionImages" , express.static("suggestionImages"))
+app.use("/categoryImages" , express.static("categoryImages"))
+app.use("/giftTypeImages" , express.static("giftTypeImages"))
+
+
+
 
 
 
@@ -56,6 +62,7 @@ app.use("/comments" , require("./routes/commentsRoute"))
 app.use("/subscriptionHistory" , require("./routes/subscriptionHistoryRoute"))
 // app.use("/aboutUs" , require("./routes/aboutUsRoute"))
 app.use("/imageSuggestions" , require("./routes/imageSuggestionRoute"))
+app.use("/notification" , require("./routes/notificationRoute"))
 
 
 
